@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dropdown Menu</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <ul class="nav-items">
+            <li class="dropdown">
+                <a href="#" class="dropbtn">File</a>
+                <div class="dropdown-content">
+                    <a href="#">New</a>
+                    <a href="#">Open</a>
+                    <a href="#">Save</a>
+                    <a href="#">Save As</a>
+                    <a href="#">Print</a>
+                    <a href="#">Exit</a>
+                </div>
+            </li>
+            <li class="dropdown">
+                <a href="#" class="dropbtn">Edit</a>
+                <div class="dropdown-content">
+                    <a href="#">Undo</a>
+                    <a href="#">Redo</a>
+                    <a href="#">Cut</a>
+                    <a href="#">Copy</a>
+                    <a href="#">Paste</a>
+                    <a href="#">Delete</a>
+                </div>
+            </li>
+            <li class="dropdown">
+                <a href="#" class="dropbtn">View</a>
+                <div class="dropdown-content">
+                    <a href="#">Zoom In</a>
+                    <a href="#">Zoom Out</a>
+                    <a href="#">Reset Zoom</a>
+                    <a href="#">Full Screen</a>
+                    <a href="#">Show Sidebar</a>
+                </div>
+            </li>
+        </ul>
+    </nav>
+    <script>
+        document.addEventListener('click', function(event) {
+            if (event.target.matches('.dropbtn')) {
+                // Close any already open dropdowns
+                document.querySelectorAll('.dropdown-content.show').forEach(dropdown => {
+                    if (!event.target.parentElement.contains(dropdown)) {
+                        dropdown.classList.remove('show');
+                    }
+                });
+                
+                // Toggle the clicked dropdown
+                event.target.nextElementSibling.classList.toggle('show');
+                event.stopPropagation();
+            } else if (!event.target.closest('.dropdown-content')) {
+                // Close all dropdowns if clicking outside
+                document.querySelectorAll('.dropdown-content.show').forEach(dropdown => {
+                    dropdown.classList.remove('show');
+                });
+            }
+        });
+    </script>
+</body>
+</html>
