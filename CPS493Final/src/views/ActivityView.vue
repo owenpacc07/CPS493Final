@@ -82,6 +82,9 @@ function handleDelete(id) {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 1rem;
+    h3 {
+        color: #FF7D00;  // Add this line
+    }
 }
 
 .activity-actions {
@@ -97,19 +100,23 @@ function handleDelete(id) {
 }
 
 .edit-btn {
-    background: #42b983;
-    color: white;
+    background: #15616D;
+    color: #FFECD1;
 }
 
 .delete-btn {
-    background: #ff4757;
-    color: white;
+    background: #78290F;
+    color: #FFECD1;
+}
+
+.activity-title h3 {
+    color: #15616D;
 }
 
 .activity-details {
     p {
         margin: 0.5rem 0;
-        color: #666;
+        color: #001524;  // Change back to dark color for better readability
     }
 }
 </style>

@@ -83,19 +83,19 @@ const hasActivities = computed(() => activityStore.friendActivities.length > 0)
 .activity-title {
     h3 {
         margin: 0;
-        color: #42b983;
+        color: #FF7D00;
     }
 
     .friend-name {
         font-size: 0.9rem;
-        color: #666;
+        color: #15616D;
     }
 }
 
 .activity-details {
     p {
         margin: 0.5rem 0;
-        color: #666;
+        color: #001524;  // Match the same color for consistency
     }
 }
 
@@ -117,7 +117,7 @@ const hasActivities = computed(() => activityStore.friendActivities.length > 0)
 
     h2 {
         font-size: 1.2rem;
-        color: #42b983;
+        color: #FF7D00;
         margin-bottom: 1rem;
     }
 }
@@ -129,8 +129,8 @@ const hasActivities = computed(() => activityStore.friendActivities.length > 0)
 }
 
 .friend-chip {
-    background: #42b983;
-    color: white;
+    background: #15616D;
+    color: #FFECD1;
     padding: 0.5rem 1rem;
     border-radius: 20px;
     font-size: 0.9rem;

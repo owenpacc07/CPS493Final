@@ -99,14 +99,14 @@ function cancelEdit() {
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 
     &.editing {
-        border: 2px solid #42b983;
+        border: 2px solid #FF7D00;
     }
 }
 
 .user-info {
     h3 {
         margin: 0;
-        color: #42b983;
+        color: #FF7D00;
     }
 
     .email {
@@ -138,16 +138,12 @@ function cancelEdit() {
     color: white;
 }
 
-.edit-btn {
-    background: #42b983;
+.edit-btn, .save-btn {
+    background: #15616D;
 }
 
 .delete-btn {
     background: #ff4757;
-}
-
-.save-btn {
-    background: #42b983;
 }
 
 .cancel-btn {

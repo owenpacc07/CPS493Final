@@ -84,14 +84,14 @@ function handleSubmit() {
 button {
     width: 100%;
     padding: 0.8rem;
-    background: #42b983;
-    color: white;
+    background: #15616D;
+    color: #FFECD1;
     border: none;
     border-radius: 4px;
     cursor: pointer;
 
     &:hover {
-        background: darken(#42b983, 10%);
+        background: darken(#15616D, 10%);
     }
 }
 </style>

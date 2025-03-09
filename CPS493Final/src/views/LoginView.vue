@@ -51,20 +51,21 @@ function handleLogin(username) {
   padding: 1rem;
   border: 1px solid #ddd;
   border-radius: 8px;
-  background: white;
+  background: #FFECD1;
+  color: #001524;
   cursor: pointer;
   display: flex;
   justify-content: space-between;
   align-items: center;
 
   &:hover {
-    background: #f5f5f5;
+    background: darken(#FFECD1, 10%);
   }
 }
 
 .role-badge {
-  background: #42b983;
-  color: white;
+  background: #15616D;
+  color: #FFECD1;
   padding: 0.2rem 0.5rem;
   border-radius: 4px;
   font-size: 0.8rem;

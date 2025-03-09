@@ -67,7 +67,7 @@ const stats = computed(() => {
     text-align: center;
 
     h3 {
-        color: #666;
+        color: #FF7D00;  // Change from #666
         font-size: 0.9rem;
         margin-bottom: 0.5rem;
     }
@@ -75,7 +75,7 @@ const stats = computed(() => {
     .stat-value {
         font-size: 1.5rem;
         font-weight: bold;
-        color: #42b983;
+        color: #FF7D00;  // Change from #15616D
     }
 
     &.types ul {
@@ -85,7 +85,16 @@ const stats = computed(() => {
 
         li {
             padding: 0.2rem 0;
+            color: #FF7D00;  // Add this line
         }
     }
+}
+
+.stat-value {
+    color: #15616D;
+}
+
+h2 {
+    color: #FF7D00;
 }
 </style>

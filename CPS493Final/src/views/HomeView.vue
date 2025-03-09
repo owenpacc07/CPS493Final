@@ -32,13 +32,13 @@ const userStore = useUserStore()
 .login-btn {
   display: inline-block;
   padding: 0.8rem 1.5rem;
-  background-color: #42b983;
-  color: white;
+  background-color: #FF7D00;
+  color: #FFECD1;
   text-decoration: none;
   border-radius: 4px;
   
   &:hover {
-    background-color: darken(#42b983, 10%);
+    background-color: darken(#FF7D00, 10%);
   }
 }
 </style>
