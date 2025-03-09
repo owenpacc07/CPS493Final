@@ -1,26 +1,36 @@
 <script setup>
 import { RouterView, RouterLink } from 'vue-router'
-import { ref } from 'vue'
+import { useUserStore } from '@/stores/user'
+import { onMounted } from 'vue'
 
-const isLoggedIn = ref(false) // This will be managed by your auth store
+const userStore = useUserStore()
+
+onMounted(() => {
+  console.log('App component mounted')
+  console.log('UserStore state:', userStore)
+})
 </script>
 
 <template>
-  <header>
+  <main>
     <nav class="container">
       <RouterLink to="/">Home</RouterLink>
-      <template v-if="!isLoggedIn">
+      <template v-if="!userStore.isLoggedIn">
         <RouterLink to="/login">Login</RouterLink>
       </template>
       <template v-else>
         <RouterLink to="/dashboard">Dashboard</RouterLink>
         <RouterLink to="/activities">Activities</RouterLink>
         <RouterLink to="/friends">Friends</RouterLink>
+        <template v-if="userStore.isAdmin">
+          <RouterLink to="/admin">Admin</RouterLink>
+        </template>
+        <button @click="userStore.logout" class="logout-btn">Logout</button>
       </template>
     </nav>
-  </header>
 
-  <RouterView />
+    <RouterView />
+  </main>
 </template>
 
 <style lang = "scss">
@@ -51,6 +61,20 @@ nav {
     &.router-link-active {
       color: #42b983;
     }
+  }
+}
+
+.logout-btn {
+  margin-left: auto;
+  padding: 0.5rem 1rem;
+  border: none;
+  background: #ff4757;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+
+  &:hover {
+    background: #ff6b81;
   }
 }
 </style>
