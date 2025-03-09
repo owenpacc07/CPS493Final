@@ -4,3 +4,4 @@ services:
     buildCommand: npm install && npm run build
     staticPublishPath: ./CPS493Final/dist
     rootDir: ./CPS493Final
+    #comment for updating repo
