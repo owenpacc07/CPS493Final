@@ -2,6 +2,7 @@
 import { useUserStore } from '@/stores/user'
 import { useActivityStore } from '@/stores/activities'
 import ActivityForm from '@/components/activities/ActivityForm.vue'
+import StatsDisplay from '@/components/stats/StatsDisplay.vue'
 import { ref } from 'vue'
 
 const userStore = useUserStore()
@@ -31,6 +32,8 @@ function handleDelete(id) {
 <template>
     <div class="container">
         <h1>Activities</h1>
+        
+        <StatsDisplay />
         
         <ActivityForm 
             :activity="editingActivity || {}"
