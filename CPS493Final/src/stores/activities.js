@@ -11,6 +11,11 @@ export const useActivityStore = defineStore('activities', () => {
         activities.value.filter(a => a.userId === userStore.currentUser?.id)
     )
 
+    const friendActivities = computed(() => {
+        const friends = userStore.currentUser?.friends || []
+        return activities.value.filter(a => friends.includes(a.userId))
+    })
+
     function addActivity(activity) {
         activities.value.push({
             id: Math.max(0, ...activities.value.map(a => a.id)) + 1,
@@ -36,6 +41,7 @@ export const useActivityStore = defineStore('activities', () => {
     return {
         activities,
         userActivities,
+        friendActivities,
         addActivity,
         updateActivity,
         deleteActivity

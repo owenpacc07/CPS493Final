@@ -10,26 +10,29 @@ export const useUserStore = defineStore('user', () => {
       username: 'admin',
       name: 'Admin User',
       role: 'admin',
-      friends: [2, 3]
+      friends: [2, 3]  // admin is friends with everyone
     },
     {
       id: 2,
       username: 'john',
       name: 'John Smith',
       role: 'user',
-      friends: [3]
+      friends: [1, 3]  // Added admin (1) to John's friends
     },
     {
       id: 3,
       username: 'sarah',
       name: 'Sarah Johnson',
       role: 'user',
-      friends: [2]
+      friends: [1, 2]  // Added admin (1) to Sarah's friends
     }
   ]
 
   const isLoggedIn = computed(() => currentUser.value !== null)
   const isAdmin = computed(() => currentUser.value?.role === 'admin')
+  const userFriends = computed(() => 
+    users.filter(u => currentUser.value?.friends?.includes(u.id))
+  )
 
   function login(username) {
     const user = users.find(u => u.username === username)
@@ -50,6 +53,7 @@ export const useUserStore = defineStore('user', () => {
     isLoggedIn,
     isAdmin,
     login,
-    logout
+    logout,
+    userFriends
   }
 })
