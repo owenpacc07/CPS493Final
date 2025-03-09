@@ -19,7 +19,6 @@ onMounted(() => {
         <RouterLink to="/login">Login</RouterLink>
       </template>
       <template v-else>
-        <RouterLink to="/dashboard">Dashboard</RouterLink>
         <RouterLink to="/activities">Activities</RouterLink>
         <RouterLink to="/friends">Friends</RouterLink>
         <template v-if="userStore.isAdmin">

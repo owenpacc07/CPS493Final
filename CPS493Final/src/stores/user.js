@@ -9,6 +9,7 @@ export const useUserStore = defineStore('user', () => {
       id: 1,
       username: 'admin',
       name: 'Admin User',
+      email: 'admin@fitness.com',
       role: 'admin',
       friends: [2, 3]  // admin is friends with everyone
     },
@@ -16,6 +17,7 @@ export const useUserStore = defineStore('user', () => {
       id: 2,
       username: 'john',
       name: 'John Smith',
+      email: 'john.smith@email.com',
       role: 'user',
       friends: [1, 3]  // Added admin (1) to John's friends
     },
@@ -23,6 +25,7 @@ export const useUserStore = defineStore('user', () => {
       id: 3,
       username: 'sarah',
       name: 'Sarah Johnson',
+      email: 'sarah.j@email.com',
       role: 'user',
       friends: [1, 2]  // Added admin (1) to Sarah's friends
     }
@@ -47,6 +50,21 @@ export const useUserStore = defineStore('user', () => {
     currentUser.value = null
   }
 
+  // Add these functions to handle temporary user updates
+  function updateUser(id, updates) {
+    const index = users.findIndex(u => u.id === id)
+    if (index !== -1) {
+      users[index] = { ...users[index], ...updates }
+    }
+  }
+
+  function deleteUser(id) {
+    const index = users.findIndex(u => u.id === id)
+    if (index !== -1 && users[index].id !== currentUser.value?.id) {
+      users.splice(index, 1)
+    }
+  }
+
   return {
     currentUser,
     users,
@@ -54,6 +72,8 @@ export const useUserStore = defineStore('user', () => {
     isAdmin,
     login,
     logout,
-    userFriends
+    userFriends,
+    updateUser,
+    deleteUser
   }
 })

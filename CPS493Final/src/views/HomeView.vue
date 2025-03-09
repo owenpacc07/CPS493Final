@@ -1,14 +1,21 @@
 <script setup>
 import { useUserStore } from '@/stores/user'
+import StatsDisplay from '@/components/stats/StatsDisplay.vue'
 const userStore = useUserStore()
 </script>
 
 <template>
   <div class="container">
-    <h1>Welcome to Fitness Tracker</h1>
-    <div v-if="!userStore.isLoggedIn" class="cta">
-      <RouterLink to="/login" class="login-btn">Login to Get Started</RouterLink>
-    </div>
+    <template v-if="userStore.isLoggedIn">
+      <h1>Welcome, {{ userStore.currentUser?.name }}</h1>
+      <StatsDisplay />
+    </template>
+    <template v-else>
+      <h1>Welcome to Fitness Tracker</h1>
+      <div class="cta">
+        <RouterLink to="/login" class="login-btn">Login to Get Started</RouterLink>
+      </div>
+    </template>
   </div>
 </template>
 

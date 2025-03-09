@@ -7,7 +7,7 @@ const router = useRouter()
 
 function handleLogin(username) {
   if (userStore.login(username)) {
-    router.push('/dashboard')
+    router.push('/')  // Change from '/dashboard' to '/'
   }
 }
 </script>
