@@ -1,0 +1,6 @@
+services:
+  - type: web
+    name: cps493-final
+    buildCommand: npm install && npm run build
+    staticPublishPath: ./dist
+    rootDir: ./CPS493Final
