@@ -32,31 +32,38 @@ function handleDelete(id) {
 <template>
     <div class="container">
         <h1>Activities</h1>
-        
-        <StatsDisplay />
-        
-        <ActivityForm 
-            :activity="editingActivity || {}"
-            @submit="handleSubmit"
-        />
-
-        <div class="activities-list">
-            <div v-for="activity in activityStore.userActivities" 
-                :key="activity.id" 
-                class="activity-card"
-            >
-                <div class="activity-header">
-                    <h3>{{ activity.type }}</h3>
-                    <div class="activity-actions">
-                        <button @click="handleEdit(activity)" class="edit-btn">Edit</button>
-                        <button @click="handleDelete(activity.id)" class="delete-btn">Delete</button>
-                    </div>
+        <div class="activity-layout">
+            <div class="left-panel">
+                <StatsDisplay />
+                <div class="form-section">
+                    <h2>{{ editingActivity ? 'Edit Activity' : 'Add New Activity' }}</h2>
+                    <ActivityForm 
+                        :activity="editingActivity || {}"
+                        @submit="handleSubmit"
+                    />
                 </div>
-                <div class="activity-details">
-                    <p>Duration: {{ activity.duration }} minutes</p>
-                    <p>Distance: {{ activity.distance }} km</p>
-                    <p>Date: {{ new Date(activity.date).toLocaleDateString() }}</p>
-                    <p v-if="activity.notes">Notes: {{ activity.notes }}</p>
+            </div>
+            <div class="right-panel">
+                <h2>Activity History</h2>
+                <div class="activities-list">
+                    <div v-for="activity in activityStore.userActivities" 
+                        :key="activity.id" 
+                        class="activity-card"
+                    >
+                        <div class="activity-header">
+                            <h3>{{ activity.type }}</h3>
+                            <div class="activity-actions">
+                                <button @click="handleEdit(activity)" class="edit-btn">Edit</button>
+                                <button @click="handleDelete(activity.id)" class="delete-btn">Delete</button>
+                            </div>
+                        </div>
+                        <div class="activity-details">
+                            <p>Duration: {{ activity.duration }} minutes</p>
+                            <p>Distance: {{ activity.distance }} km</p>
+                            <p>Date: {{ new Date(activity.date).toLocaleDateString() }}</p>
+                            <p v-if="activity.notes">Notes: {{ activity.notes }}</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -64,6 +71,29 @@ function handleDelete(id) {
 </template>
 
 <style scoped lang="scss">
+.activity-layout {
+    display: grid;
+    grid-template-columns: 350px 1fr;
+    gap: 2rem;
+    padding: 1rem;
+    min-height: calc(100vh - 150px);
+}
+
+.left-panel, .right-panel {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    padding: 1rem;
+}
+
+h1, h2 {
+    color: #FF7D00;
+    margin-bottom: 1rem;
+}
+
+.form-section {
+    margin-top: 2rem;
+}
+
 .activities-list {
     margin-top: 2rem;
     display: grid;

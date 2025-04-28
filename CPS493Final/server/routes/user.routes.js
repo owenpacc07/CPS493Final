@@ -7,6 +7,7 @@ const router = express.Router();
 router.post('/register', userController.register);
 router.post('/login', userController.login);
 router.post('/update-password', authenticateToken, userController.updatePassword);
+router.get('/search', authenticateToken, userController.searchUsers);  // Add this before :id route
 router.get('/', authenticateToken, isAdmin, userController.getUsers);
 router.get('/:id', authenticateToken, userController.getUser);
 

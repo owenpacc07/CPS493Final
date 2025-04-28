@@ -48,8 +48,7 @@ const stats = computed(() => {
 
 <style scoped lang="scss">
 .stats-container {
-    margin: 2rem 0;
-    padding: 1rem;
+    padding: 0;  // Remove padding
 }
 
 .stats-grid {
@@ -96,5 +95,7 @@ const stats = computed(() => {
 
 h2 {
     color: #FF7D00;
+    margin-top: 0;  // Add this line
+    margin-bottom: 1rem;
 }
 </style>

@@ -72,6 +72,11 @@ export const api = {
         return data;
     },
 
+    // Users endpoints
+    async searchUsers(query) {
+        return fetchWithAuth(`/users/search?query=${encodeURIComponent(query)}`);
+    },
+
     // Activities endpoints
     async getActivities() {
         return fetchWithAuth('/activities');

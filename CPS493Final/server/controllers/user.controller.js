@@ -22,7 +22,7 @@ export const getUser = async (req, res) => {
     }
 };
 
-export const register = async (req, res) => {
+export const login = async (req, res) => {
     try {
         console.log('Login attempt:', req.body);
         const { username, password } = req.body;
@@ -46,12 +46,6 @@ export const register = async (req, res) => {
             return res.status(401).json({ message: 'Invalid credentials' });
         }
 
-        const user = await User.create({
-            username,
-            password,
-            email,
-            name
-        });
         const token = jwt.sign(
             { id: user._id, role: user.role },
             process.env.JWT_SECRET || 'your_jwt_secret_key',
@@ -75,81 +69,49 @@ export const register = async (req, res) => {
     }
 };
 
-export const login = async (req, res) => {
+export const register = async (req, res) => {
     try {
         console.log('Registration request body:', req.body);
-        const { username, password, email, name, role } = req.body;
+        const { username, password, email, name } = req.body;
         
-        // Detailed validation logging
-        const missingFields = [];
-        if (!username) missingFields.push('username');
-        if (!password) missingFields.push('password');
-        if (!email) missingFields.push('email');
-        if (!name) missingFields.push('name');
-        
-        if (missingFields.length > 0) {
-            console.log('Missing required fields:', missingFields);
-            return res.status(400).json({ 
-                message: `Missing required fields: ${missingFields.join(', ')}` 
-            });
+        if (!username || !password || !email || !name) {
+            return res.status(400).json({ message: 'All fields are required' });
         }
 
-        // Check for existing user
         const existingUser = await User.findOne({ 
             $or: [{ username }, { email }] 
         });
         
         if (existingUser) {
-            const field = existingUser.username === username ? 'username' : 'email';
-            console.log(`${field} already exists:`, existingUser);
-            return res.status(400).json({ 
-                message: `${field} already exists` 
-            });
+            return res.status(400).json({ message: 'Username or email already exists' });
         }
 
-        // Create new user
-        console.log('Creating new user with data:', {
-            username,
-            email,
-            name,
-            role: role || 'user'
-        });
-
-        const user = await User.create({
+        const newUser = await User.create({
             username,
             password,
             email,
             name,
-            role: role || 'user'
+            role: 'user'
         });
 
         const token = jwt.sign(
-            { id: user._id, role: user.role },
+            { id: newUser._id, role: newUser.role },
             process.env.JWT_SECRET || 'your_jwt_secret_key',
             { expiresIn: '24h' }
         );
 
-        console.log('User created successfully:', {
-            id: user._id,
-            username: user.username,
-            role: user.role
-        });
-
         res.status(201).json({
             token,
             user: {
-                id: user._id,
-                username: user.username,
-                name: user.name,
-                role: user.role
+                id: newUser._id,
+                username: newUser.username,
+                name: newUser.name,
+                role: newUser.role
             }
         });
     } catch (error) {
         console.error('Registration error:', error);
-        res.status(500).json({ 
-            message: error.message,
-            details: error.toString()
-        });
+        res.status(500).json({ message: error.message });
     }
 };
 
@@ -166,6 +128,24 @@ export const updatePassword = async (req, res) => {
         await user.save();
 
         res.json({ message: 'Password updated successfully' });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+export const searchUsers = async (req, res) => {
+    try {
+        const { query } = req.query;
+        if (!query) {
+            return res.json([]);
+        }
+
+        const users = await User.find({
+            username: { $regex: query, $options: 'i' },
+            _id: { $ne: req.user.id }
+        }, '-password');
+        
+        res.json(users);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }

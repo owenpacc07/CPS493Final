@@ -1,68 +1,52 @@
 <script setup>
-import { useUserStore } from '@/stores/user'
+import { onMounted } from 'vue'
+import FriendList from '@/components/friends/FriendList.vue'
+import FriendActivityFeed from '@/components/friends/FriendActivityFeed.vue'
 import { useActivityStore } from '@/stores/activities'
-import { computed } from 'vue'
 
-const userStore = useUserStore()
 const activityStore = useActivityStore()
 
-const getFriendName = (userId) => {
-    return userStore.users.find(u => u.id === userId)?.name || 'Unknown User'
-}
-
-const hasFriends = computed(() => userStore.userFriends.length > 0)
-const hasActivities = computed(() => activityStore.friendActivities.length > 0)
+onMounted(async () => {
+    await activityStore.fetchFriendActivities()
+})
 </script>
 
 <template>
     <div class="container">
-        <h1>Friends' Activities</h1>
-        
-        <div v-if="!hasFriends" class="empty-state">
-            <p>You don't have any friends yet!</p>
+        <h1>Friends & Activities</h1>
+        <div class="friends-layout">
+            <div class="left-panel">
+                <FriendList />
+            </div>
+            <div class="right-panel">
+                <FriendActivityFeed />
+            </div>
         </div>
-        
-        <template v-else>
-            <div class="friends-list">
-                <h2>Your Friends</h2>
-                <div class="friend-chips">
-                    <span v-for="friend in userStore.userFriends" 
-                          :key="friend.id" 
-                          class="friend-chip"
-                    >
-                        {{ friend.name }}
-                    </span>
-                </div>
-            </div>
-
-            <div v-if="!hasActivities" class="empty-state">
-                <p>No activities from your friends yet!</p>
-            </div>
-
-            <div v-else class="activities-list">
-                <div v-for="activity in activityStore.friendActivities" 
-                    :key="activity.id" 
-                    class="activity-card"
-                >
-                    <div class="activity-header">
-                        <div class="activity-title">
-                            <h3>{{ activity.type }}</h3>
-                            <span class="friend-name">by {{ getFriendName(activity.userId) }}</span>
-                        </div>
-                    </div>
-                    <div class="activity-details">
-                        <p>Duration: {{ activity.duration }} minutes</p>
-                        <p>Distance: {{ activity.distance }} km</p>
-                        <p>Date: {{ new Date(activity.date).toLocaleDateString() }}</p>
-                        <p v-if="activity.notes">Notes: {{ activity.notes }}</p>
-                    </div>
-                </div>
-            </div>
-        </template>
     </div>
 </template>
 
 <style scoped lang="scss">
+.friends-layout {
+    display: grid;
+    grid-template-columns: 350px 1fr;
+    gap: 2rem;
+    padding: 1rem;
+    min-height: calc(100vh - 150px);
+}
+
+.left-panel, .right-panel {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    padding: 1rem;
+    height: fit-content;
+}
+
+h1 {
+    color: #FF7D00;
+    margin-bottom: 2rem;
+    padding: 0 1rem;
+}
+
 .activities-list {
     margin-top: 2rem;
     display: grid;
