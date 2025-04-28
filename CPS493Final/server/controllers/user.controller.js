@@ -40,7 +40,6 @@ export const register = async (req, res) => {
             email,
             name
         });
-
         const token = jwt.sign(
             { id: user._id, role: user.role },
             process.env.JWT_SECRET,
@@ -57,6 +56,7 @@ export const register = async (req, res) => {
             }
         });
     } catch (error) {
+
         res.status(400).json({ message: error.message });
     }
 };
@@ -77,6 +77,7 @@ export const login = async (req, res) => {
         );
 
         res.json({
+
             token,
             user: {
                 id: user._id,

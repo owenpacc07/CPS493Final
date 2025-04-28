@@ -1,6 +1,7 @@
 import jwt from 'jsonwebtoken';
 
 const authenticateToken = (req, res, next) => {
+
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
 
@@ -18,6 +19,7 @@ const authenticateToken = (req, res, next) => {
 };
 
 const isAdmin = (req, res, next) => {
+
     if (req.user.role !== 'admin') {
         return res.status(403).json({ message: 'Admin access required' });
     }
@@ -25,3 +27,4 @@ const isAdmin = (req, res, next) => {
 };
 
 export { authenticateToken, isAdmin };
+

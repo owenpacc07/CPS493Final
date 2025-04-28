@@ -39,6 +39,7 @@ app.use('/api/users', userRoutes);
 app.use('/api/activities', activityRoutes);
 app.use('/api/friends', friendRoutes);
 
+
 // Base route
 app.get('/', (req, res) => {
     res.json({ 
