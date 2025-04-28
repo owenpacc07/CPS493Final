@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 
 export const getUsers = async (req, res) => {
     try {
-        const users = await User.find();
+        const users = await User.find({}, '-password');
         res.json(users);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -12,13 +12,52 @@ export const getUsers = async (req, res) => {
 
 export const getUser = async (req, res) => {
     try {
-        const user = await User.findById(req.params.id);
+        const user = await User.findById(req.params.id, '-password');
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
         }
         res.json(user);
     } catch (error) {
         res.status(500).json({ message: error.message });
+    }
+};
+
+export const register = async (req, res) => {
+    try {
+        const { username, password, email, name } = req.body;
+        
+        const existingUser = await User.findOne({ 
+            $or: [{ username }, { email }] 
+        });
+        
+        if (existingUser) {
+            return res.status(400).json({ message: 'Username or email already exists' });
+        }
+
+        const user = await User.create({
+            username,
+            password,
+            email,
+            name
+        });
+        const token = jwt.sign(
+            { id: user._id, role: user.role },
+            process.env.JWT_SECRET,
+            { expiresIn: '24h' }
+        );
+
+        res.status(201).json({
+            token,
+            user: {
+                id: user._id,
+                username: user.username,
+                name: user.name,
+                role: user.role
+            }
+        });
+    } catch (error) {
+
+        res.status(400).json({ message: error.message });
     }
 };
 
@@ -38,47 +77,7 @@ export const login = async (req, res) => {
         );
 
         res.json({
-            token,
-            user: {
-                id: user._id,
-                username: user.username,
-                name: user.name,
-                role: user.role
-            }
-        });
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
-};
 
-export const register = async (req, res) => {
-    try {
-        const { username, password, email, name } = req.body;
-        
-        const existingUser = await User.findOne({ 
-            $or: [{ username }, { email }] 
-        });
-        
-        if (existingUser) {
-            return res.status(400).json({ 
-                message: 'Username or email already exists' 
-            });
-        }
-
-        const user = await User.create({
-            username,
-            password,
-            email,
-            name
-        });
-
-        const token = jwt.sign(
-            { id: user._id, role: user.role },
-            process.env.JWT_SECRET,
-            { expiresIn: '24h' }
-        );
-
-        res.status(201).json({
             token,
             user: {
                 id: user._id,
@@ -109,5 +108,3 @@ export const updatePassword = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
-
-// More controller methods to be added...
