@@ -1,40 +1,78 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import { activities as initialActivities } from '@/data/activities'
-import { useUserStore } from './user'
+import { api } from '@/services/api.service'
 
 export const useActivityStore = defineStore('activities', () => {
-    const activities = ref(initialActivities)
-    const userStore = useUserStore()
+    const activities = ref([])
+    const error = ref(null)
+    const loading = ref(false)
 
-    const userActivities = computed(() => 
-        activities.value.filter(a => a.userId === userStore.currentUser?.id)
-    )
+    const userActivities = computed(() => activities.value)
+    const friendActivities = ref([])
 
-    const friendActivities = computed(() => {
-        const friends = userStore.currentUser?.friends || []
-        return activities.value.filter(a => friends.includes(a.userId))
-    })
-
-    function addActivity(activity) {
-        activities.value.push({
-            id: Math.max(0, ...activities.value.map(a => a.id)) + 1,
-            userId: userStore.currentUser.id,
-            ...activity
-        })
-    }
-
-    function updateActivity(id, updates) {
-        const index = activities.value.findIndex(a => a.id === id)
-        if (index !== -1 && activities.value[index].userId === userStore.currentUser.id) {
-            activities.value[index] = { ...activities.value[index], ...updates }
+    async function fetchActivities() {
+        try {
+            loading.value = true
+            error.value = null
+            activities.value = await api.getActivities()
+        } catch (err) {
+            error.value = err.message
+        } finally {
+            loading.value = false
         }
     }
 
-    function deleteActivity(id) {
-        const index = activities.value.findIndex(a => a.id === id)
-        if (index !== -1 && activities.value[index].userId === userStore.currentUser.id) {
-            activities.value.splice(index, 1)
+    async function addActivity(activity) {
+        try {
+            loading.value = true
+            error.value = null
+            const newActivity = await api.createActivity(activity)
+            activities.value.push(newActivity)
+        } catch (err) {
+            error.value = err.message
+        } finally {
+            loading.value = false
+        }
+    }
+
+    async function updateActivity(id, updates) {
+        try {
+            loading.value = true
+            error.value = null
+            const updated = await api.updateActivity(id, updates)
+            const index = activities.value.findIndex(a => a.id === id)
+            if (index !== -1) {
+                activities.value[index] = updated
+            }
+        } catch (err) {
+            error.value = err.message
+        } finally {
+            loading.value = false
+        }
+    }
+
+    async function deleteActivity(id) {
+        try {
+            loading.value = true
+            error.value = null
+            await api.deleteActivity(id)
+            activities.value = activities.value.filter(a => a.id !== id)
+        } catch (err) {
+            error.value = err.message
+        } finally {
+            loading.value = false
+        }
+    }
+
+    async function fetchFriendActivities() {
+        try {
+            loading.value = true
+            error.value = null
+            friendActivities.value = await api.getFriendActivities()
+        } catch (err) {
+            error.value = err.message
+        } finally {
+            loading.value = false
         }
     }
 
@@ -42,8 +80,12 @@ export const useActivityStore = defineStore('activities', () => {
         activities,
         userActivities,
         friendActivities,
+        error,
+        loading,
+        fetchActivities,
         addActivity,
         updateActivity,
-        deleteActivity
+        deleteActivity,
+        fetchFriendActivities
     }
 })

@@ -1,79 +1,60 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
+import { api } from '@/services/api.service'
 
 export const useUserStore = defineStore('user', () => {
-  const currentUser = ref(null)
-  
-  const users = [
-    {
-      id: 1,
-      username: 'admin',
-      name: 'Admin User',
-      email: 'admin@fitness.com',
-      role: 'admin',
-      friends: [2, 3]  // admin is friends with everyone
-    },
-    {
-      id: 2,
-      username: 'john',
-      name: 'John Smith',
-      email: 'john.smith@email.com',
-      role: 'user',
-      friends: [1, 3]  // Added admin (1) to John's friends
-    },
-    {
-      id: 3,
-      username: 'sarah',
-      name: 'Sarah Johnson',
-      email: 'sarah.j@email.com',
-      role: 'user',
-      friends: [1, 2]  // Added admin (1) to Sarah's friends
+    const currentUser = ref(null)
+    const error = ref(null)
+    const loading = ref(false)
+
+    const isLoggedIn = computed(() => currentUser.value !== null)
+    const isAdmin = computed(() => currentUser.value?.role === 'admin')
+
+    async function login(credentials) {
+        try {
+            loading.value = true
+            error.value = null
+            const response = await api.login(credentials)
+            currentUser.value = response.user
+            localStorage.setItem('token', response.token)
+            return true
+        } catch (err) {
+            error.value = err.message
+            return false
+        } finally {
+            loading.value = false
+        }
     }
-  ]
 
-  const isLoggedIn = computed(() => currentUser.value !== null)
-  const isAdmin = computed(() => currentUser.value?.role === 'admin')
-  const userFriends = computed(() => 
-    users.filter(u => currentUser.value?.friends?.includes(u.id))
-  )
-
-  function login(username) {
-    const user = users.find(u => u.username === username)
-    if (user) {
-      currentUser.value = user
-      return true
+    function logout() {
+        currentUser.value = null
+        localStorage.removeItem('token')
     }
-    return false
-  }
 
-  function logout() {
-    currentUser.value = null
-  }
-
-  // Add these functions to handle temporary user updates
-  function updateUser(id, updates) {
-    const index = users.findIndex(u => u.id === id)
-    if (index !== -1) {
-      users[index] = { ...users[index], ...updates }
+    async function register(userData) {
+        try {
+            loading.value = true
+            error.value = null
+            const response = await api.register(userData)
+            currentUser.value = response.user
+            localStorage.setItem('token', response.token)
+            return true
+        } catch (err) {
+            error.value = err.message
+            return false
+        } finally {
+            loading.value = false
+        }
     }
-  }
 
-  function deleteUser(id) {
-    const index = users.findIndex(u => u.id === id)
-    if (index !== -1 && users[index].id !== currentUser.value?.id) {
-      users.splice(index, 1)
+    return {
+        currentUser,
+        isLoggedIn,
+        isAdmin,
+        error,
+        loading,
+        login,
+        logout,
+        register
     }
-  }
-
-  return {
-    currentUser,
-    users,
-    isLoggedIn,
-    isAdmin,
-    login,
-    logout,
-    userFriends,
-    updateUser,
-    deleteUser
-  }
 })
