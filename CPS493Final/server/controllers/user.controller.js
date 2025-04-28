@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 
 export const getUsers = async (req, res) => {
     try {
-        const users = await User.find();
+        const users = await User.find({}, '-password');
         res.json(users);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -12,7 +12,7 @@ export const getUsers = async (req, res) => {
 
 export const getUser = async (req, res) => {
     try {
-        const user = await User.findById(req.params.id);
+        const user = await User.findById(req.params.id, '-password');
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
         }
@@ -22,7 +22,7 @@ export const getUser = async (req, res) => {
     }
 };
 
-export const login = async (req, res) => {
+export const register = async (req, res) => {
     try {
         console.log('Login attempt:', req.body);
         const { username, password } = req.body;
@@ -46,6 +46,12 @@ export const login = async (req, res) => {
             return res.status(401).json({ message: 'Invalid credentials' });
         }
 
+        const user = await User.create({
+            username,
+            password,
+            email,
+            name
+        });
         const token = jwt.sign(
             { id: user._id, role: user.role },
             process.env.JWT_SECRET || 'your_jwt_secret_key',
@@ -69,7 +75,7 @@ export const login = async (req, res) => {
     }
 };
 
-export const register = async (req, res) => {
+export const login = async (req, res) => {
     try {
         console.log('Registration request body:', req.body);
         const { username, password, email, name, role } = req.body;
@@ -164,5 +170,3 @@ export const updatePassword = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
-
-// More controller methods to be added...
