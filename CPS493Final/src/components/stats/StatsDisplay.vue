@@ -1,11 +1,12 @@
 <script setup>
-import { computed } from 'vue'
+import { computed, onMounted } from 'vue'
 import { useActivityStore } from '@/stores/activities'
+import LoadingSpinner from '@/components/common/LoadingSpinner.vue'
 
 const activityStore = useActivityStore()
 
 const stats = computed(() => {
-    const activities = activityStore.userActivities
+    const activities = activityStore.activities || []
     return {
         totalActivities: activities.length,
         totalDistance: activities.reduce((sum, act) => sum + Number(act.distance), 0).toFixed(1),
@@ -16,12 +17,20 @@ const stats = computed(() => {
         }, {})
     }
 })
+
+onMounted(() => {
+    activityStore.fetchActivities()
+})
 </script>
 
 <template>
     <div class="stats-container">
         <h2>Your Activity Statistics</h2>
-        <div class="stats-grid">
+        <LoadingSpinner v-if="activityStore.loading" />
+        <div v-else-if="activityStore.error" class="error-message">
+            {{ activityStore.error }}
+        </div>
+        <div v-else class="stats-grid">
             <div class="stat-card">
                 <h3>Total Activities</h3>
                 <p class="stat-value">{{ stats.totalActivities }}</p>
@@ -34,7 +43,7 @@ const stats = computed(() => {
                 <h3>Total Duration</h3>
                 <p class="stat-value">{{ stats.totalDuration }} minutes</p>
             </div>
-            <div class="stat-card types">
+            <div class="stat-card types" v-if="Object.keys(stats.byType).length">
                 <h3>Activities by Type</h3>
                 <ul>
                     <li v-for="(count, type) in stats.byType" :key="type">

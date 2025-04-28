@@ -71,6 +71,7 @@ function handleSubmit() {
     label {
         display: block;
         margin-bottom: 0.5rem;
+        color: #FFECD1;
     }
 
     input, textarea {
@@ -78,6 +79,8 @@ function handleSubmit() {
         padding: 0.5rem;
         border: 1px solid #ddd;
         border-radius: 4px;
+        background: #FFECD1;
+        color: #001524;
     }
 }
 

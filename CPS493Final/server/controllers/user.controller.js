@@ -144,7 +144,6 @@ export const searchUsers = async (req, res) => {
             username: { $regex: query, $options: 'i' },
             _id: { $ne: req.user.id }
         }, '-password');
-        
         res.json(users);
     } catch (error) {
         res.status(500).json({ message: error.message });

@@ -9,6 +9,7 @@ router.post('/login', userController.login);
 router.post('/update-password', authenticateToken, userController.updatePassword);
 router.get('/search', authenticateToken, userController.searchUsers);  // Add this before :id route
 router.get('/', authenticateToken, isAdmin, userController.getUsers);
+router.get('/search', authenticateToken, userController.searchUsers);
 router.get('/:id', authenticateToken, userController.getUser);
 
 export default router;

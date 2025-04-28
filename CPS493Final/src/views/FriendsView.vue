@@ -119,4 +119,23 @@ h1 {
     border-radius: 20px;
     font-size: 0.9rem;
 }
+
+.friends-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    padding: 1rem;
+}
+
+.panel {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    padding: 1rem;
+}
+
+h1 {
+    color: #FF7D00;
+    margin-bottom: 2rem;
+    padding: 0 1rem;
+}
 </style>
