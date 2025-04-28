@@ -20,28 +20,25 @@ async function handleSubmit() {
         error.value = null
         const credentials = isRegistering.value 
             ? {
-                username: formData.value.username.trim(),
+                username: formData.value.username,
                 password: formData.value.password,
-                email: formData.value.email.trim(),
-                name: formData.value.name.trim(),
-                role: 'user'  // Set default role
+                email: formData.value.email,
+                name: formData.value.name
             }
             : {
-                username: formData.value.username.trim(),
+                username: formData.value.username,
                 password: formData.value.password
-            };
-            
-        console.log('Submitting:', credentials);
+            }
+
         const success = isRegistering.value 
             ? await userStore.register(credentials)
-            : await userStore.login(credentials);
+            : await userStore.login(credentials)
 
         if (success) {
-            router.push('/');
+            router.push('/')
         }
     } catch (err) {
-        console.error('Auth error:', err);
-        error.value = err.message || 'Authentication failed';
+        error.value = err.message || 'Authentication failed'
     }
 }
 
@@ -99,46 +96,75 @@ function toggleMode() {
     </div>
 </template>
 
-<style lang="scss" scoped>
+<style scoped lang="scss">
 .login-page {
-  padding: 2rem;
-  text-align: center;
-
-  h1 {
-    margin-bottom: 2rem;
-  }
+    padding: 2rem;
+    text-align: center;
 }
 
-.user-list {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  max-width: 300px;
-  margin: 0 auto;
+.login-form {
+    max-width: 300px;
+    margin: 0 auto;
+    
+    .form-group {
+        margin-bottom: 1rem;
+        text-align: left;
+        
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #FFECD1;
+        }
+        
+        input {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background: #FFECD1;
+            color: #001524;
+        }
+    }
 }
 
-.user-button {
-  padding: 1rem;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  background: #FFECD1;
-  color: #001524;
-  cursor: pointer;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-
-  &:hover {
-    background: darken(#FFECD1, 10%);
-  }
+.login-button {
+    width: 100%;
+    padding: 0.8rem;
+    background: #FF7D00;
+    color: #FFECD1;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    
+    &:hover {
+        background: darken(#FF7D00, 10%);
+    }
 }
 
-.role-badge {
-  background: #15616D;
-  color: #FFECD1;
-  padding: 0.2rem 0.5rem;
-  border-radius: 4px;
-  font-size: 0.8rem;
+.toggle-text {
+    margin-top: 1rem;
+    color: #FFECD1;
+}
+
+.toggle-button {
+    background: none;
+    border: none;
+    color: #FF7D00;
+    cursor: pointer;
+    text-decoration: underline;
+    padding: 0 0.5rem;
+
+    &:hover {
+        color: darken(#FF7D00, 10%);
+    }
+}
+
+.error-message {
+    color: #ff4757;
+    margin-bottom: 1rem;
+    padding: 0.5rem;
+    background: rgba(255, 71, 87, 0.1);
+    border-radius: 4px;
 }
 
 .error-message {

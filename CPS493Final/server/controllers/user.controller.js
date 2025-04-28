@@ -170,3 +170,16 @@ export const updatePassword = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+
+export const searchUsers = async (req, res) => {
+    try {
+        const { query } = req.query;
+        const users = await User.find({
+            username: { $regex: query, $options: 'i' },
+            _id: { $ne: req.user.id }
+        }, '-password');
+        res.json(users);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};

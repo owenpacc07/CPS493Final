@@ -8,8 +8,9 @@ class ApiError extends Error {
 }
 
 async function fetchWithAuth(endpoint, options = {}) {
-    console.log(`API Call to ${endpoint}:`, options)
+    console.log(`API Request to ${endpoint}:`, options);
     const token = localStorage.getItem('token');
+    console.log('Token:', token);
     const headers = {
         'Content-Type': 'application/json',
         ...options.headers,
@@ -19,36 +20,29 @@ async function fetchWithAuth(endpoint, options = {}) {
         headers.Authorization = `Bearer ${token}`;
     }
 
-    try {
-        const response = await fetch(`${API_URL}${endpoint}`, {
-            ...options,
-            headers,
-        });
-        const data = await response.json();
-        console.log(`API Response from ${endpoint}:`, data)
+    const response = await fetch(`${API_URL}${endpoint}`, {
+        ...options,
+        headers,
+    });
 
-        if (!response.ok) {
-            throw new ApiError(data.message || 'API request failed', response.status);
-        }
+    const data = await response.json();
 
-        return data;
-    } catch (error) {
-        console.error(`API Error for ${endpoint}:`, error);
-        throw error;
+    if (!response.ok) {
+        throw new ApiError(data.message || 'API request failed', response.status);
     }
+
+    return data;
 }
 
 export const api = {
     // Auth endpoints
     async login(credentials) {
-        // Don't use fetchWithAuth for login
         const response = await fetch(`${API_URL}/users/login`, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(credentials),
         });
+
         const data = await response.json();
         if (!response.ok) {
             throw new ApiError(data.message || 'Login failed', response.status);
@@ -57,14 +51,12 @@ export const api = {
     },
 
     async register(userData) {
-        // Don't use fetchWithAuth for register
         const response = await fetch(`${API_URL}/users/register`, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(userData),
         });
+
         const data = await response.json();
         if (!response.ok) {
             throw new ApiError(data.message || 'Registration failed', response.status);
@@ -74,7 +66,10 @@ export const api = {
 
     // Activities endpoints
     async getActivities() {
-        return fetchWithAuth('/activities');
+        console.log('Fetching activities...');
+        const data = await fetchWithAuth('/activities');
+        console.log('Activities response:', data);
+        return data;
     },
 
     async createActivity(activity) {
@@ -117,5 +112,10 @@ export const api = {
         return fetchWithAuth(`/friends/${friendId}`, {
             method: 'DELETE',
         });
+    },
+
+    // Users endpoints
+    async searchUsers(query) {
+        return fetchWithAuth(`/users/search?query=${encodeURIComponent(query)}`);
     }
 };
