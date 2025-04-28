@@ -85,6 +85,7 @@ export const useActivityStore = defineStore('activities', () => {
         addActivity,
         fetchFriendActivities,
         updateActivity,
-        deleteActivity
+        deleteActivity,
+        fetchFriendActivities
     }
 })
