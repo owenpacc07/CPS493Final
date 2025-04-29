@@ -31,9 +31,20 @@ if (process.env.NODE_ENV === 'production') {
     const distPath = path.join(__dirname, '..', 'dist');
     app.use(express.static(distPath));
     
+    // Move API routes before the catch-all
+    app.use('/api/users', userRoutes);
+    app.use('/api/activities', activityRoutes);
+    app.use('/api/friends', friendRoutes);
+    
+    // Catch-all route for SPA
     app.get('*', (req, res) => {
         res.sendFile(path.join(distPath, 'index.html'));
     });
+} else {
+    // API routes for development
+    app.use('/api/users', userRoutes);
+    app.use('/api/activities', activityRoutes);
+    app.use('/api/friends', friendRoutes);
 }
 
 // Database Connection
@@ -58,12 +69,6 @@ mongoose.connect(process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/fitness_t
     });
     process.exit(1);
 });
-
-// API Routes
-app.use('/api/users', userRoutes);
-app.use('/api/activities', activityRoutes);
-app.use('/api/friends', friendRoutes);
-
 
 // Base route
 app.get('/', (req, res) => {
