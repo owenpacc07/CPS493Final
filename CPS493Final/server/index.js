@@ -16,9 +16,16 @@ const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Add security middleware before other middleware
+// Update security middleware
 app.use((req, res, next) => {
-    res.setHeader('Content-Security-Policy', "default-src 'self'; img-src 'self' data: https:; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline';");
+    res.setHeader('Content-Security-Policy', 
+        "default-src 'self';" +
+        "img-src 'self' data: https:;" +
+        "script-src 'self' 'unsafe-inline' 'unsafe-eval';" +
+        "style-src 'self' 'unsafe-inline';" +
+        "font-src 'self' https: data:;" +
+        "connect-src 'self' https:;"
+    );
     next();
 });
 
@@ -39,27 +46,26 @@ app.use('/api/users', userRoutes);
 app.use('/api/activities', activityRoutes);
 app.use('/api/friends', friendRoutes);
 
-// Static file serving for production
+// Update static file serving
 if (process.env.NODE_ENV === 'production') {
-    console.log('Running in production mode');
-    
-    // Serve static files from the dist directory
     const distPath = path.join(__dirname, '..', 'dist');
-    console.log('Static file path:', distPath);
+    console.log('Serving static files from:', distPath);
     
+    // Move static file serving before the catch-all route
     app.use(express.static(distPath));
+    app.use(express.static(path.join(distPath, 'assets')));
     
-    // Serve index.html for all other routes
-    app.get('*', (req, res) => {
-        console.log('Serving index.html for path:', req.path);
+    app.get('/*', (req, res) => {
+        console.log('Catch-all route hit:', req.path);
         const indexPath = path.join(distPath, 'index.html');
         
-        if (fs.existsSync(indexPath)) {
-            res.sendFile(indexPath);
-        } else {
-            console.error('Error: index.html not found');
-            res.status(404).send('Frontend files not found');
+        if (!fs.existsSync(indexPath)) {
+            console.error('Error: index.html not found at', indexPath);
+            return res.status(404).send('Frontend files not found');
         }
+        
+        console.log('Serving index.html from:', indexPath);
+        res.sendFile(indexPath);
     });
 }
 
