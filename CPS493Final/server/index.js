@@ -16,27 +16,20 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Middleware
-app.use(cors({
-    origin: process.env.NODE_ENV === 'production' 
-        ? ['https://fitness-tracker.onrender.com', 'https://fitness-tracker-api.onrender.com']
-        : 'http://localhost:5173',
-    credentials: true
-}));
+app.use(cors());
 app.use(express.json());
 
 const PORT = process.env.PORT || 3000;
 
-// First, setup all API routes
+// API Routes should come before static file serving
 app.use('/api/users', userRoutes);
 app.use('/api/activities', activityRoutes);
 app.use('/api/friends', friendRoutes);
 
-// Then handle static files and SPA routing for production
+// Static file serving for production
 if (process.env.NODE_ENV === 'production') {
-    const distPath = path.join(__dirname, '..', 'dist');
+    const distPath = path.resolve(__dirname, '../../dist');  // Change this line
     app.use(express.static(distPath));
-    
-    // This should be the last route
     app.get('*', (req, res) => {
         res.sendFile(path.join(distPath, 'index.html'));
     });
