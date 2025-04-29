@@ -56,6 +56,8 @@ onMounted(async () => {
 </template>
 
 <style scoped lang="scss">
+@use "sass:color";
+
 .container {
   padding: 2rem;
   text-align: center;
@@ -74,7 +76,7 @@ onMounted(async () => {
   border-radius: 4px;
   
   &:hover {
-    background-color: darken(#FF7D00, 10%);
+    background-color: color.adjust(#FF7D00, $lightness: -10%);
   }
 }
 

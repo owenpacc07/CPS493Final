@@ -41,33 +41,37 @@ app.use(express.json());
 
 const PORT = process.env.PORT || 3000;
 
-// API Routes should come before static file serving
+// API Routes first
 app.use('/api/users', userRoutes);
 app.use('/api/activities', activityRoutes);
 app.use('/api/friends', friendRoutes);
 
-// Update static file serving
+// Static file serving for production
 if (process.env.NODE_ENV === 'production') {
-    const distPath = path.join(__dirname, '..', 'dist');
-    console.log('Serving static files from:', distPath);
+    const distPath = path.resolve(__dirname, '..', 'dist');
+    console.log('Static serving configuration:');
+    console.log('- Base directory:', distPath);
+    console.log('- Directory exists:', fs.existsSync(distPath));
+    console.log('- Directory contents:', fs.readdirSync(distPath));
     
-    // Move static file serving before the catch-all route
     app.use(express.static(distPath));
-    app.use(express.static(path.join(distPath, 'assets')));
     
-    app.get('/*', (req, res) => {
-        console.log('Catch-all route hit:', req.path);
+    // Catch-all route - must be last
+    app.get('*', (req, res) => {
         const indexPath = path.join(distPath, 'index.html');
-        
-        if (!fs.existsSync(indexPath)) {
-            console.error('Error: index.html not found at', indexPath);
-            return res.status(404).send('Frontend files not found');
-        }
-        
-        console.log('Serving index.html from:', indexPath);
+        console.log('Request path:', req.path);
+        console.log('Serving:', indexPath);
+        console.log('File exists:', fs.existsSync(indexPath));
         res.sendFile(indexPath);
     });
 }
+
+// Add this before MongoDB connection
+console.log('Server Configuration:');
+console.log('NODE_ENV:', process.env.NODE_ENV);
+console.log('PORT:', process.env.PORT);
+console.log('Current directory:', __dirname);
+console.log('Dist path:', path.resolve(__dirname, '..', 'dist'));
 
 // Database Connection
 console.log('Attempting MongoDB connection...');
