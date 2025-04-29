@@ -26,25 +26,20 @@ app.use(express.json());
 
 const PORT = process.env.PORT || 3000;
 
-// Serve static files in production
+// First, setup all API routes
+app.use('/api/users', userRoutes);
+app.use('/api/activities', activityRoutes);
+app.use('/api/friends', friendRoutes);
+
+// Then handle static files and SPA routing for production
 if (process.env.NODE_ENV === 'production') {
     const distPath = path.join(__dirname, '..', 'dist');
     app.use(express.static(distPath));
     
-    // Move API routes before the catch-all
-    app.use('/api/users', userRoutes);
-    app.use('/api/activities', activityRoutes);
-    app.use('/api/friends', friendRoutes);
-    
-    // Catch-all route for SPA
+    // This should be the last route
     app.get('*', (req, res) => {
         res.sendFile(path.join(distPath, 'index.html'));
     });
-} else {
-    // API routes for development
-    app.use('/api/users', userRoutes);
-    app.use('/api/activities', activityRoutes);
-    app.use('/api/friends', friendRoutes);
 }
 
 // Database Connection
@@ -68,18 +63,6 @@ mongoose.connect(process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/fitness_t
         code: err.code
     });
     process.exit(1);
-});
-
-// Base route
-app.get('/', (req, res) => {
-    res.json({ 
-        message: 'Fitness Tracker API',
-        endpoints: [
-            '/api/users',
-            '/api/activities',
-            '/api/friends'
-        ]
-    });
 });
 
 // Error handling middleware
