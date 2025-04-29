@@ -41,19 +41,25 @@ app.use('/api/friends', friendRoutes);
 
 // Static file serving for production
 if (process.env.NODE_ENV === 'production') {
+    console.log('Running in production mode');
+    
+    // Serve static files from the dist directory
     const distPath = path.join(__dirname, '..', 'dist');
-    console.log('Serving static files from:', distPath);
+    console.log('Static file path:', distPath);
+    
     app.use(express.static(distPath));
     
-    app.get('/*', (req, res) => {
+    // Serve index.html for all other routes
+    app.get('*', (req, res) => {
+        console.log('Serving index.html for path:', req.path);
         const indexPath = path.join(distPath, 'index.html');
-        console.log('Attempting to serve:', indexPath);
         
-        if (!fs.existsSync(indexPath)) {
-            console.error('index.html not found at:', indexPath);
-            return res.status(404).send('Frontend files not found');
+        if (fs.existsSync(indexPath)) {
+            res.sendFile(indexPath);
+        } else {
+            console.error('Error: index.html not found');
+            res.status(404).send('Frontend files not found');
         }
-        res.sendFile(indexPath);
     });
 }
 
