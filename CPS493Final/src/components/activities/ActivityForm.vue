@@ -59,6 +59,8 @@ function handleSubmit() {
 </template>
 
 <style scoped lang="scss">
+@use "sass:color";
+
 .activity-form {
     max-width: 400px;
     margin: 0 auto;
@@ -94,7 +96,7 @@ button {
     cursor: pointer;
 
     &:hover {
-        background: darken(#15616D, 10%);
+        background: color.adjust(#15616D, $lightness: -10%);
     }
 }
 </style>

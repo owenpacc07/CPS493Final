@@ -110,6 +110,8 @@ onMounted(loadFriends);
 </template>
 
 <style scoped lang="scss">
+@use "sass:color";
+
 .search-section {
     margin-bottom: 2rem;
     
@@ -171,7 +173,7 @@ onMounted(loadFriends);
         transition: background 0.3s ease;
 
         &:hover {
-            background: darken(#15616D, 10%);
+            background: color.adjust(#15616D, $lightness: -10%);
         }
     }
 }
@@ -191,7 +193,7 @@ onMounted(loadFriends);
     cursor: pointer;
 
     &:hover {
-        background: darken(#78290F, 10%);
+        background: color.adjust(#78290F, $lightness: -10%);
     }
 }
 </style>

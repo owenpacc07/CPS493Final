@@ -50,16 +50,16 @@ userSchema.pre('save', async function(next) {
 
 userSchema.methods.comparePassword = async function(candidatePassword) {
     try {
-        console.log('Password comparison:', {
-            candidatePassword,
-            hashedPassword: this.password.substring(0, 10) + '...'
-        });
+        console.log('Comparing passwords');
+        console.log('Candidate password length:', candidatePassword.length);
+        console.log('Stored hash length:', this.password.length);
+        
         const isMatch = await bcrypt.compare(candidatePassword, this.password);
-        console.log('bcrypt.compare result:', isMatch);
+        console.log('Password match result:', isMatch);
         return isMatch;
     } catch (error) {
         console.error('Password comparison error:', error);
-        return false;
+        throw error;
     }
 };
 

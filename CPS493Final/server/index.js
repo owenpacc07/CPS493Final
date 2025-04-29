@@ -21,6 +21,12 @@ app.use((req, res, next) => {
     next();
 });
 
+// Add debug logging
+app.use((req, res, next) => {
+    console.log(`[${new Date().toISOString()}] ${req.method} ${req.path}`);
+    next();
+});
+
 // Middleware
 app.use(cors());
 app.use(express.json());
@@ -34,32 +40,49 @@ app.use('/api/friends', friendRoutes);
 
 // Static file serving for production - simplified and fixed path
 if (process.env.NODE_ENV === 'production') {
-    app.use(express.static('dist'));
+    const distPath = path.join(__dirname, '..', 'dist');
+    console.log('Serving static files from:', distPath);
+    app.use(express.static(distPath));
+    
     app.get('/*', (req, res) => {
-        res.sendFile(path.join(__dirname, '..', 'dist', 'index.html'));
+        const indexPath = path.join(distPath, 'index.html');
+        console.log('Serving index.html from:', indexPath);
+        if (!fs.existsSync(indexPath)) {
+            console.error('index.html not found at:', indexPath);
+            return res.status(404).send('Frontend files not found');
+        }
+        res.sendFile(indexPath);
     });
 }
 
 // Database Connection
+console.log('Attempting MongoDB connection...');
+console.log('Connection string:', process.env.MONGODB_URI?.replace(/\/\/[^:]+:[^@]+@/, '//****:****@'));
+console.log('Environment:', process.env.NODE_ENV);
+
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/fitness_tracker', {
     serverSelectionTimeoutMS: 5000,
     socketTimeoutMS: 45000,
 })
 .then(() => {
-    console.log('Connected to MongoDB');
-    console.log('Connection URI:', process.env.MONGODB_URI.replace(/\/\/[^:]+:[^@]+@/, '//<credentials>@'));
-    // Only start server after DB connection
+    console.log('\n=== MongoDB Connection Success ===');
+    console.log('Connected to database:', mongoose.connection.name);
+    console.log('Host:', mongoose.connection.host);
+    console.log('Port:', mongoose.connection.port);
+    console.log('==============================\n');
+    
     app.listen(PORT, () => {
         console.log(`Server running on port ${PORT}`);
         console.log(`Environment: ${process.env.NODE_ENV}`);
+        console.log(`MongoDB URI: ${process.env.MONGODB_URI?.split('@')[1]}`); // Safe logging
     });
 })
 .catch(err => {
-    console.error('MongoDB connection error details:', {
-        message: err.message,
-        reason: err.reason,
-        code: err.code
-    });
+    console.error('\n=== MongoDB Connection Error ===');
+    console.error('Error Name:', err.name);
+    console.error('Error Message:', err.message);
+    console.error('Full Error:', err);
+    console.error('==============================\n');
     process.exit(1);
 });
 

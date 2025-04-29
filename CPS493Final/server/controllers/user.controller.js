@@ -24,25 +24,28 @@ export const getUser = async (req, res) => {
 
 export const login = async (req, res) => {
     try {
-        console.log('Login attempt:', req.body);
         const { username, password } = req.body;
+        console.log('Login attempt for username:', username);
         
         if (!username || !password) {
+            console.log('Missing credentials');
             return res.status(400).json({ message: 'Username and password are required' });
         }
 
         const user = await User.findOne({ username });
-        console.log('Found user:', user ? 'yes' : 'no');
+        console.log('Database query result:', user ? 'User found' : 'User not found');
         
         if (!user) {
-            console.log('User not found:', username);
+            console.log('No user found with username:', username);
             return res.status(401).json({ message: 'Invalid credentials' });
         }
 
+        console.log('Comparing passwords for user:', username);
         const isValid = await user.comparePassword(password);
-        console.log('Password validation:', { username, isValid });
+        console.log('Password comparison result:', isValid);
 
         if (!isValid) {
+            console.log('Invalid password for user:', username);
             return res.status(401).json({ message: 'Invalid credentials' });
         }
 

@@ -97,6 +97,8 @@ function toggleMode() {
 </template>
 
 <style scoped lang="scss">
+@use "sass:color";
+
 .login-page {
     padding: 2rem;
     text-align: center;
@@ -137,7 +139,7 @@ function toggleMode() {
     cursor: pointer;
     
     &:hover {
-        background: darken(#FF7D00, 10%);
+        background: color.adjust(#FF7D00, $lightness: -10%);
     }
 }
 
@@ -155,7 +157,7 @@ function toggleMode() {
     padding: 0 0.5rem;
 
     &:hover {
-        color: darken(#FF7D00, 10%);
+        color: color.adjust(#FF7D00, $lightness: -10%);
     }
 }
 
@@ -207,7 +209,7 @@ function toggleMode() {
     cursor: pointer;
     
     &:hover {
-        background: darken(#FF7D00, 10%);
+        background: color.adjust(#FF7D00, $lightness: -10%);
     }
 }
 
@@ -225,7 +227,7 @@ function toggleMode() {
     padding: 0 0.5rem;
 
     &:hover {
-        color: darken(#FF7D00, 10%);
+        color: color.adjust(#FF7D00, $lightness: -10%);
     }
 }
 </style>

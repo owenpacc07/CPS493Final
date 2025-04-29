@@ -33,6 +33,7 @@ onMounted(() => {
 </template>
 
 <style lang="scss">
+@use "sass:color";
 @import url('https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap');
 
 * {
@@ -82,7 +83,7 @@ nav {
   cursor: pointer;
 
   &:hover {
-    background: lighten(#78290F, 10%);
+    background: color.adjust(#78290F, $lightness: -10%);
   }
 }
 
@@ -97,14 +98,14 @@ button {
     background: #15616D;
     color: #FFECD1;
     &:hover {
-      background: lighten(#15616D, 10%);
+      background: color.adjust(#15616D, $lightness: -10%);
     }
   }
   &.accent-btn {
     background: #FF7D00;
     color: #FFECD1;
     &:hover {
-      background: lighten(#FF7D00, 10%);
+      background: color.adjust(#FF7D00, $lightness: -10%);
     }
   }
 }
