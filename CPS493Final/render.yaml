@@ -1,7 +1,16 @@
 services:
   - type: web
-    name: cps493-final
+    name: fitness-tracker
+    env: node
+    region: ohio
+    plan: free
     buildCommand: npm install && npm run build
-    staticPublishPath: ./CPS493Final/dist
-    rootDir: ./CPS493Final
-    #comment for updating repo
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: JWT_SECRET
+        sync: false
+      - key: MONGODB_URI
+        sync: false
+    autoDeploy: true
