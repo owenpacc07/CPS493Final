@@ -43,6 +43,7 @@ mongoose.connect(process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/fitness_t
 })
 .then(() => {
     console.log('Connected to MongoDB');
+    console.log('Connection URI:', process.env.MONGODB_URI.replace(/\/\/[^:]+:[^@]+@/, '//<credentials>@'));
     // Only start server after DB connection
     app.listen(PORT, () => {
         console.log(`Server running on port ${PORT}`);
@@ -50,7 +51,11 @@ mongoose.connect(process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/fitness_t
     });
 })
 .catch(err => {
-    console.error('MongoDB connection error:', err);
+    console.error('MongoDB connection error details:', {
+        message: err.message,
+        reason: err.reason,
+        code: err.code
+    });
     process.exit(1);
 });
 
