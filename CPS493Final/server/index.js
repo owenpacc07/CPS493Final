@@ -18,7 +18,7 @@ const __dirname = path.dirname(__filename);
 // Middleware
 app.use(cors({
     origin: process.env.NODE_ENV === 'production' 
-        ? 'https://your-app-name.onrender.com'  // Update this with your Render URL
+        ? ['https://fitness-tracker.onrender.com', 'https://fitness-tracker-api.onrender.com']
         : 'http://localhost:5173',
     credentials: true
 }));
