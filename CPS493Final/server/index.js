@@ -7,6 +7,7 @@ import activityRoutes from './routes/activity.routes.js';
 import friendRoutes from './routes/friend.routes.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import fs from 'fs';  // Add this import
 
 dotenv.config();
 
@@ -38,7 +39,7 @@ app.use('/api/users', userRoutes);
 app.use('/api/activities', activityRoutes);
 app.use('/api/friends', friendRoutes);
 
-// Static file serving for production - simplified and fixed path
+// Static file serving for production
 if (process.env.NODE_ENV === 'production') {
     const distPath = path.join(__dirname, '..', 'dist');
     console.log('Serving static files from:', distPath);
@@ -46,7 +47,8 @@ if (process.env.NODE_ENV === 'production') {
     
     app.get('/*', (req, res) => {
         const indexPath = path.join(distPath, 'index.html');
-        console.log('Serving index.html from:', indexPath);
+        console.log('Attempting to serve:', indexPath);
+        
         if (!fs.existsSync(indexPath)) {
             console.error('index.html not found at:', indexPath);
             return res.status(404).send('Frontend files not found');
