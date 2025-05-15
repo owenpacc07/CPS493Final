@@ -1,12 +1,16 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { api } from '@/services/api.service'
+import { activities as initialActivities } from '@/data/activities'
+import { useUserStore } from './user'
 
 export const useActivityStore = defineStore('activities', () => {
-    const activities = ref([])
+    // Ensure we have valid data or default to empty array
+    const activities = ref(Array.isArray(initialActivities) ? initialActivities : [])
     const friendActivities = ref([])
     const error = ref(null)
     const loading = ref(false)
+    const userStore = useUserStore()
 
     async function fetchActivities() {
         try {
