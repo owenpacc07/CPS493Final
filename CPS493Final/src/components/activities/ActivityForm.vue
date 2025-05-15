@@ -87,15 +87,20 @@ async function onSearch(query) {
                 :loading="isLoading"
                 placeholder="Type to search friends (min. 2 characters)"
                 :min-length="2"
-                @select="friend => taggedFriends.push(friend)"
+                @select="friend => {
+                    console.log('Selected friend:', friend);
+                    taggedFriends.push(friend)
+                }"
             />
             <div v-if="taggedFriends.length" class="tagged-friends">
+                <p>Tagged Friends:</p>
                 <span v-for="friend in taggedFriends" 
                       :key="friend.id" 
                       class="friend-tag"
                 >
                     {{ friend.name }}
-                    <button type="button" @click="taggedFriends = taggedFriends.filter(f => f.id !== friend.id)"
+                    <button type="button" 
+                            @click="taggedFriends = taggedFriends.filter(f => f.id !== friend.id)"
                             class="remove-tag"
                     >×</button>
                 </span>
