@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "@oruga-ui/oruga-next": "^0.10.5"
+  }
+}
